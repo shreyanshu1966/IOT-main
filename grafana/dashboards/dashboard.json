@@ -1,0 +1,27 @@
+{
+    "dashboard": {
+      "id": null,
+      "title": "IoT Dashboard",
+      "tags": [],
+      "timezone": "browser",
+      "schemaVersion": 16,
+      "version": 0,
+      "panels": [
+        {
+          "type": "graph",
+          "title": "Sensor Data",
+          "targets": [
+            {
+              "refId": "A",
+              "measurement": "iot_data",
+              "fields": ["value"]
+            }
+          ],
+          "time": {
+            "from": "now-6h",
+            "to": "now"
+          }
+        }
+      ]
+    }
+  }
