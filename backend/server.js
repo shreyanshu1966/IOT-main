@@ -56,6 +56,7 @@ const paymentRoutes = require("./routes/payment");
 const testimonialRoutes = require("./routes/testimonials");
 const clientRoutes = require("./routes/clients");
 const dataRoutes = require("./routes/data"); // Import data routes
+const subscriptionRoutes = require('./routes/subscription'); // Import subscription routes
 
 // API Routes
 app.use("/api/products", productRoutes);
@@ -68,6 +69,7 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/data", dataRoutes); // Use data routes
+app.use('/api/subscription', subscriptionRoutes); // Use subscription routes
 
 // Default Route
 app.get("/", (req, res) => {
