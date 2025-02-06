@@ -46,20 +46,65 @@ function SignalProcessing() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-        <input type="text" placeholder="Waveform" value={waveform} onChange={(e) => setWaveform(e.target.value)} />
-        <input type="text" placeholder="Sampling Frequency" value={samplingFrequency} onChange={(e) => setSamplingFrequency(e.target.value)} />
-        <input type="text" placeholder="Filter Order" value={filterOrder} onChange={(e) => setFilterOrder(e.target.value)} />
-        <input type="text" placeholder="Low Cutoff" value={lowCutoff} onChange={(e) => setLowCutoff(e.target.value)} />
-        <input type="text" placeholder="High Cutoff" value={highCutoff} onChange={(e) => setHighCutoff(e.target.value)} />
-        <button type="submit">Process Signal</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {chartData && (
+    <div className="bg-gray-800 p-6 rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <h2>Processed Signal</h2>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Upload File</label>
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files[0])}
+            className="block w-full text-gray-300 bg-gray-700 border border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Waveform</label>
+          <input
+            type="text"
+            placeholder="Waveform"
+            value={waveform}
+            onChange={(e) => setWaveform(e.target.value)}
+            className="block w-full text-gray-300 bg-gray-700 border border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <input
+          type="text"
+          placeholder="Sampling Frequency"
+          value={samplingFrequency}
+          onChange={(e) => setSamplingFrequency(e.target.value)}
+          className="block w-full text-white bg-gray-700 border border-gray-600 rounded-lg p-2"
+        />
+        <input
+          type="text"
+          placeholder="Filter Order"
+          value={filterOrder}
+          onChange={(e) => setFilterOrder(e.target.value)}
+          className="block w-full text-white bg-gray-700 border border-gray-600 rounded-lg p-2"
+        />
+        <input
+          type="text"
+          placeholder="Low Cutoff"
+          value={lowCutoff}
+          onChange={(e) => setLowCutoff(e.target.value)}
+          className="block w-full text-white bg-gray-700 border border-gray-600 rounded-lg p-2"
+        />
+        <input
+          type="text"
+          placeholder="High Cutoff"
+          value={highCutoff}
+          onChange={(e) => setHighCutoff(e.target.value)}
+          className="block w-full text-white bg-gray-700 border border-gray-600 rounded-lg p-2"
+        />
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Submit
+        </button>
+      </form>
+      {error && <p className="mt-4 text-red-500">{error}</p>}
+      {chartData && (
+        <div className="mt-6">
+          <h2 className="text-2xl font-semibold mb-4">Processed Signal</h2>
           <Plot
             data={[chartData]}
             layout={{
