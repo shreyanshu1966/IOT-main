@@ -2,7 +2,12 @@ const Subscription = require('../models/Subscription');
 
 const checkSubscription = async (req, res, next) => {
   try {
-    const subscription = await Subscription.findOne({ 
+    // Skip subscription check for admin users
+    if (req.user.role === 'admin') {
+      return next();
+    }
+
+    const subscription = await Subscription.findOne({
       user: req.user.userId,
       status: 'active',
       endDate: { $gt: new Date() }
@@ -14,7 +19,7 @@ const checkSubscription = async (req, res, next) => {
 
     next();
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Error checking subscription' });
   }
 };
 

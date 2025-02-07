@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "https://yourdomain.com"], // Adjust as needed
+  origin: ["http://localhost:5175", "https://yourdomain.com"], // Adjust as needed
   credentials: true,
 }));
 app.use(helmet()); // Security headers

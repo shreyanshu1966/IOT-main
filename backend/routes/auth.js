@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { sendOTP, sendPasswordResetEmail } = require('../utils/email'); // Ensure sendOTP is imported here
+const { auth } = require('../middleware/auth'); // Add this line
 const router = express.Router();
 const crypto = require('crypto');
 const { body, validationResult } = require('express-validator');
@@ -144,6 +145,25 @@ router.post('/reset-password/:token', async (req, res) => {
     res.json({ message: 'Password reset successful' });
   } catch (err) {
     res.status(500).json({ message: 'Error resetting password' });
+  }
+});
+
+// Add this route after your existing routes
+router.get('/me', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({
+      id: user._id,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      // Add any other user fields you need
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching user details' });
   }
 });
 

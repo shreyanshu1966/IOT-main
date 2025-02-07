@@ -6,11 +6,32 @@ const apiUrl = import.meta.env.VITE_API_URL;
 function Dashboard() {
   const [hasSubscription, setHasSubscription] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    checkSubscription();
+    checkUserRole();
   }, []);
+
+  const checkUserRole = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const isAdminUser = response.data.role === 'admin';
+      setIsAdmin(isAdminUser);
+      
+      if (!isAdminUser) {
+        // Only check subscription for non-admin users
+        await checkSubscription();
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error checking user role:', error);
+      setLoading(false);
+    }
+  };
 
   const checkSubscription = async () => {
     try {
@@ -66,7 +87,7 @@ function Dashboard() {
     return <div>Loading...</div>;
   }
 
-  if (!hasSubscription) {
+  if (!hasSubscription && !isAdmin) {
     return (
       <div className="min-h-screen bg-gray-900 text-white p-6">
         <div className="max-w-2xl mx-auto text-center space-y-6">
@@ -94,9 +115,9 @@ function Dashboard() {
       </header>
       <main className="p-6 space-y-6">
         <section className="bg-gray-800 p-4 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold mb-4">Grafana Dashboard</h2>
+          
           <iframe
-            src={import.meta.env.VITE_GRAFANA_URL}
+            src={`${import.meta.env.VITE_GRAFANA_URL}?kiosk&hideControls`}
             width="100%"
             height="600px"
             frameBorder="0"
