@@ -117,11 +117,11 @@ const NavBar = ({
             <NavLink to="/dashboard" icon={Settings}>
               Dashboard
             </NavLink>
-            {userRole === "user" && (
+            {/* {userRole === "user" && (
               <NavLink to="/orders" icon={ClipboardList}>
                 Orders
               </NavLink>
-            )}
+            )} */}
             {userRole === "admin" && (
               <NavLink to="/admin" icon={Settings}>
                 Admin
@@ -144,7 +144,7 @@ const NavBar = ({
 
           {/* Right Actions */}
           <div className="flex items-center space-x-4">
-            {userRole !== "admin" && (
+            {/* {userRole !== "admin" && (
               <button
                 onClick={() => setIsCartOpen(true)}
                 className="relative p-2 hover:bg-gray-800 rounded-lg transition-all duration-300 group"
@@ -158,7 +158,7 @@ const NavBar = ({
                   )}
                 </div>
               </button>
-            )}
+            )} */}
 
             <button
               onClick={handleMenuClick}
@@ -189,11 +189,11 @@ const NavBar = ({
               <NavLink to="/dashboard" icon={Settings}>
                 Dashboard
               </NavLink>
-              {userRole === "user" && (
+              {/* {userRole === "user" && (
                 <NavLink to="/orders" icon={ClipboardList}>
                   Orders
                 </NavLink>
-              )}
+              )} */}
               {userRole === "admin" && (
                 <NavLink to="/admin" icon={Settings}>
                   Admin
@@ -221,3 +221,4 @@ const NavBar = ({
 };
 
 export default NavBar;
+

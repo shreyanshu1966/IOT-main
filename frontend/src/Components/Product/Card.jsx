@@ -77,11 +77,11 @@ const Card = ({ product, addToCart }) => {
           {product.description}
         </p>
 
-        {/* Price and Add to Cart */}
+{/*        
         <div className="flex justify-between items-center mt-4">
           <p className="text-lg font-bold text-white">₹{product.price.toFixed(2)}</p>
 
-          {/* Conditionally render the Add to Cart button */}
+          
           {userRole !== 'admin' && (
             <motion.button
               onClick={handleAddToCart}
@@ -92,7 +92,7 @@ const Card = ({ product, addToCart }) => {
               <span className="font-medium">Add</span>
             </motion.button>
           )}
-        </div>
+        </div> */}
       </div>
     </motion.div>
   );
