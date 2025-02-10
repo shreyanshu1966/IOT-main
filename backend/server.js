@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "https://yourdomain.com","http://intuitiverobotics.io","https://intuitiverobotics.io","http://www.intuitiverobotics.io","https://www.intuitiverobotics.io"], // Adjust as needed
+  origin: ["http://localhost:5173", "https://yourdomain.com","http://intuitiverobotics.io","https://intuitiverobotics.io","http://www.intuitiverobotics.io","https://www.intuitiverobotics.io","http://147.93.106.39"], // Adjust as needed
   credentials: true,
 }));
 app.use(helmet()); // Security headers
