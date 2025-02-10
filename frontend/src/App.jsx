@@ -37,6 +37,7 @@ import AdminOrder from './Components/Admin/AdminOrder';
 import AboutTestimonial from "./Components/NavAndFooter/AboutTestimonial";
 import About from "./Components/NavAndFooter/About";
 import Dashboard from "./Components/Dashboard";
+import RequestQuote from "./Components/Product/RequestQuote";
 // Add the new quick links
 const quickLinks = [
   {
@@ -71,8 +72,8 @@ function QuickLinks() {
 }
 
 const App = () => {
-  const [cart, setCart] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  // const [cart, setCart] = useState([]);
+  // const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState([]);
@@ -93,66 +94,7 @@ const App = () => {
     }
   }, [token]);
 
-  const addToCart = async (product) => {
-    try {
-      const response = await axios.post(
-        `${apiUrl}/api/cart/add`,
-        { productId: product._id, quantity: 1 },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setCart(response.data.products);
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      if (error.response?.status === 401) {
-        // Handle unauthorized access - redirect to login
-        Navigate("/login");
-      }
-    }
-  };
-
-  const removeFromCart = async (productId) => {
-    await axios.post(
-      `${apiUrl}/api/cart/remove`,
-      { productId },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    fetchCart();
-  };
-
-  const updateQuantity = async (productId, quantity) => {
-    if (quantity < 1) return; // Prevent quantity from being less than 1
-    try {
-      const response = await axios.post(
-        `${apiUrl}/api/cart/update`,
-        { productId, quantity },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setCart(response.data.products);
-    } catch (error) {
-      console.error("Error updating quantity:", error);
-    }
-  };
-
-  const fetchCart = async () => {
-    try {
-      const response = await axios.get(`${apiUrl}/api/cart`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setCart(response.data?.products || []); // Handle null cart object
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-      setCart([]); // Set cart to an empty array in case of error
-    }
-  };
+  
 
   const fetchProducts = async () => {
     const response = await axios.get(`${apiUrl}/api/products`);
@@ -169,15 +111,11 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    fetchCart();
+    // fetchCart();
     fetchProducts();
   }, [token]);
 
-  const calculateTotal = () => {
-    return cart
-      .reduce((total, item) => total + item.product.price * item.quantity, 0)
-      .toFixed(2);
-  };
+
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -188,10 +126,10 @@ const App = () => {
       <ScrollToTop />
       <div className="min-h-screen bg-gray-100 pt-20">
         <NavBar
-          cartLength={cart.length}
+          // cartLength={cart.length}
           isMobileMenuOpen={isMobileMenuOpen}
           setIsMobileMenuOpen={setIsMobileMenuOpen}
-          setIsCartOpen={setIsCartOpen}
+          // setIsCartOpen={setIsCartOpen}
           setSearchQuery={setSearchQuery}
           setToken={setToken} // Pass setToken to NavBar
         />
@@ -207,7 +145,7 @@ const App = () => {
 
                 <FeaturedProduct
                   featuredProducts={featuredProducts}
-                  addToCart={addToCart}
+                  // addToCart={addToCart}
                 />
                 <AboutTestimonial/>
 
@@ -221,22 +159,22 @@ const App = () => {
             element={
               <ProductPage
                 products={filteredProducts}
-                addToCart={addToCart}
+                // addToCart={addToCart}
                 setSearchQuery={setSearchQuery}
               />
             }
           />
           <Route
             path="/product/:id"
-            element={<ProductDetails addToCart={addToCart} />}
+            element={<ProductDetails/>}
           />
           <Route
             path="/checkout"
             element={
               token ? (
                 <CheckoutPage
-                  cart={cart}
-                  calculateTotal={calculateTotal}
+                  // cart={cart}
+                  // calculateTotal={calculateTotal}
                   token={token}
                 />
               ) : (
@@ -256,6 +194,8 @@ const App = () => {
           <Route path="/AdminOrder" element={<AdminOrder />} />
           <Route path="/about" element={<About />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/request-quote" element={<RequestQuote />} />
+
           {/* Protected routes */}
           <Route
             path="/admin"
@@ -274,15 +214,7 @@ const App = () => {
             }
           />
         </Routes>
-        {isCartOpen && (
-          <ShoppingCart
-            cartItems={cart}
-            setIsCartOpen={setIsCartOpen}
-            removeFromCart={removeFromCart}
-            updateQuantity={updateQuantity}
-            calculateTotal={calculateTotal}
-          />
-        )}
+        
         <Footer />
       </div>
     </Router>

@@ -25,7 +25,7 @@ router.post('/create-subscription', auth, async (req, res) => {
       return res.status(400).json({ message: 'User already has active subscription' });
     }
 
-    const amount = 29900; // ₹299 in paise
+    const amount = 299;
     const currency = 'INR';
     const options = {
       amount,
