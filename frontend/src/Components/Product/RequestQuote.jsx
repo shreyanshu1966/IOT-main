@@ -14,13 +14,14 @@ const RequestQuote = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "", // Add phone field
+    phone: "",
     product,
     message: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(null);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -44,12 +45,34 @@ const RequestQuote = () => {
     }
   }, []);
 
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = "Phone number is invalid";
+    }
+    if (!formData.product.trim()) newErrors.product = "Product is required";
+    return newErrors;
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
     setLoading(true);
     setStatus(null);
 
@@ -109,6 +132,7 @@ const RequestQuote = () => {
               required
               className="w-full p-3 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-400"
             />
+            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
 
           {/* Email Field */}
@@ -122,6 +146,7 @@ const RequestQuote = () => {
               required
               className="w-full p-3 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-400"
             />
+            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
 
           {/* Phone Field */}
@@ -135,6 +160,7 @@ const RequestQuote = () => {
               required
               className="w-full p-3 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-400"
             />
+            {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
           </div>
 
           {/* Product Field */}
@@ -149,6 +175,7 @@ const RequestQuote = () => {
               className="w-full p-3 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-400"
               readOnly
             />
+            {errors.product && <p className="text-red-500 text-sm">{errors.product}</p>}
           </div>
 
           {/* Message Field */}
