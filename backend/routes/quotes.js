@@ -5,10 +5,20 @@ const { sendQuoteEmail } = require("../models/emailController");
 router.post("/request", async (req, res) => {
   const { name, email, phone, product, message } = req.body;
 
+  // Input validation
   if (!name || !email || !phone || !product) {
     return res.status(400).json({ 
       success: false, 
       error: "All fields are required" 
+    });
+  }
+
+  // Email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid email format"
     });
   }
 

@@ -1,23 +1,24 @@
 const nodemailer = require("nodemailer");
+require('dotenv').config();
 
 // Email transporter configuration
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.gmail.com",
+  host: 'smtp.gmail.com',
   port: 587,
   secure: false,
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    pass: process.env.EMAIL_PASS
   },
-  debug: true, // Enable debugging
-  logger: true  // Log to console
+  tls: {
+    rejectUnauthorized: false
+  }
 });
 
 // Verify transporter
-transporter.verify(function (error, success) {
+transporter.verify((error, success) => {
   if (error) {
-    console.log("Email configuration error:", error);
+    console.error("Email configuration error:", error);
   } else {
     console.log("Email server is ready to send messages");
   }
@@ -29,12 +30,16 @@ const sanitizeInput = (text) => {
 };
 
 exports.sendQuoteEmail = async ({ name, email, phone, product, message }) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    throw new Error("Email configuration is missing");
+  }
+
   try {
     const sanitizedMessage = sanitizeInput(message || '');
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER, // Send to yourself
+      from: `"Intuitive Robotics" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
       subject: `New Quote Request: ${product.substring(0, 50)}`, // Prevent long subjects
       html: `
         <h3 style="color: #2563eb;">New Quote Request</h3>
