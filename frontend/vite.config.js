@@ -6,6 +6,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    base: '/', // Ensure the base path is set correctly
+    emptyOutDir: true,
+    copyPublicDir: true
   },
 });
