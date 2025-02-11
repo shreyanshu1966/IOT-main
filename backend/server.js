@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
+const quotesRouter = require('./routes/quotes'); // Add this line to register the quotes routes
 
 // Load environment variables
 dotenv.config();
@@ -83,6 +84,7 @@ app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/data", dataRoutes); // Use data routes
 app.use('/api/subscription', subscriptionRoutes); // Use subscription routes
+app.use('/api/quote', quotesRouter); // Add this line to register the quotes routes
 
 // Default Route
 app.get("/", (req, res) => {

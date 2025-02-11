@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { sendQuoteEmail } = require("../models/emailController");
 
+// The full path will be /api/quote/request
 router.post("/request", async (req, res) => {
   const { name, email, phone, product, message } = req.body;
 
