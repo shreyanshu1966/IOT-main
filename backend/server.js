@@ -42,8 +42,8 @@ mongoose.connect(process.env.MONGODB_URI, {
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
 // Static Files
-const uploadsPath = path.join(__dirname, '../public/uploads');
-const documentsPath = path.join(__dirname, '../public/documents');
+const uploadsPath = path.join(__dirname, '../frontend/public/uploads');
+const documentsPath = path.join(__dirname, '../frontend/public/documents');
 
 // Create directories if they don't exist
 const fs = require('fs');
