@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Set maximum request size to 16MB
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # Set maximum request size to 50MB
 
 CORS(app, resources={r"/*": {"origins": [
     "http://localhost:5175", 
