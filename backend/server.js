@@ -42,8 +42,21 @@ mongoose.connect(process.env.MONGODB_URI, {
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
 // Static Files
-app.use("/uploads", express.static(path.join(__dirname, "../../frontend/public/uploads")));
-app.use("/documents", express.static(path.join(__dirname, "../../frontend/public/documents")));
+const uploadsPath = path.join(__dirname, '../public/uploads');
+const documentsPath = path.join(__dirname, '../public/documents');
+
+// Create directories if they don't exist
+const fs = require('fs');
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath, { recursive: true });
+}
+if (!fs.existsSync(documentsPath)) {
+  fs.mkdirSync(documentsPath, { recursive: true });
+}
+
+// Serve static files
+app.use("/uploads", express.static(uploadsPath));
+app.use("/documents", express.static(documentsPath));
 
 // Import Routes
 const productRoutes = require("./routes/products");
