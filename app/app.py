@@ -7,17 +7,7 @@ import numpy as np
 import pandas as pd
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # Set maximum request size to 50MB
-
-CORS(app, resources={r"/*": {"origins": [
-    "http://localhost:5175", 
-    "https://yourdomain.com",
-    "http://147.93.106.39",
-    "http://intuitiverobotics.io",
-    "https://intuitiverobotics.io",
-    "https://www.intuitiverobotics.io",
-    "http://www.intuitiverobotics.io"
-], "supports_credentials": True}})
+CORS(app)
 
 UPLOAD_FOLDER = './uploads'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -70,7 +60,5 @@ def process_signal_endpoint():
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
 
-from app import app
-
-if __name__ == "__main__":
-    app.run()
+if __name__ == '__main__':
+    app.run(port=5001)
