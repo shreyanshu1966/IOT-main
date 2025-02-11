@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
+const fs = require('fs'); // Add fs module
 
 // Load environment variables
 dotenv.config();
@@ -41,9 +42,21 @@ mongoose.connect(process.env.MONGODB_URI, {
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
-// Static Files
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/documents", express.static(path.join(__dirname, "documents")));
+// Static Files Setup
+const uploadPath = path.join(__dirname, '../frontend/public/uploads');
+const documentsPath = path.join(__dirname, '../frontend/public/documents');
+
+// Ensure directories exist
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
+if (!fs.existsSync(documentsPath)) {
+  fs.mkdirSync(documentsPath, { recursive: true });
+}
+
+// Serve static files
+app.use("/uploads", express.static(uploadPath));
+app.use("/documents", express.static(documentsPath));
 
 // Import Routes
 const productRoutes = require("./routes/products");
@@ -84,83 +97,3 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
 });
-
-
-// const express = require("express");
-// const mongoose = require("mongoose");
-// const dotenv = require("dotenv");
-// const cors = require("cors");
-// const helmet = require("helmet");
-// const morgan = require("morgan");
-// const path = require("path");
-// const rateLimit = require("express-rate-limit");
-// const cookieParser = require("cookie-parser");
-
-// // Load environment variables
-// dotenv.config();
-
-// const app = express();
-// const PORT = process.env.PORT || 5000;
-
-// // Middleware
-// app.use(cors({
-//   origin: ["http://localhost:5173", "https://yourdomain.com"],
-//   credentials: true,
-// }));
-// app.use(helmet());
-// app.use(morgan("dev"));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser());
-
-// // Rate Limiting
-// const apiLimiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 100,
-//   message: "Too many requests from this IP, please try again later.",
-// });
-// app.use("/api/auth", apiLimiter);
-
-// // MongoDB Connection
-// mongoose.connect(process.env.MONGODB_URI)
-//   .then(() => console.log("✅ Connected to MongoDB"))
-//   .catch(err => console.error("❌ MongoDB connection error:", err));
-
-// // Static Files
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-// app.use("/documents", express.static(path.join(__dirname, "documents")));
-
-// // Routes
-// const productRoutes = require("./routes/products");
-// const solutionRoutes = require("./routes/solutions");
-// const authRoutes = require("./routes/auth");
-// const adminRoutes = require("./routes/admin");
-// const orderRoutes = require("./routes/orders");
-// const paymentRoutes = require("./routes/payment");
-// const testimonialRoutes = require("./routes/testimonials");
-// const clientRoutes = require("./routes/clients");
-// const dataRoutes = require("./routes/data");
-// const subscriptionRoutes = require('./routes/subscription');
-// const quoteRoutes = require("./routes/quotes"); // Correct quotes route
-
-// app.use("/api/products", productRoutes);
-// app.use("/api/solutions", solutionRoutes);
-// app.use("/api/auth", authRoutes);
-// app.use("/api/admin", adminRoutes);
-// app.use("/api/orders", orderRoutes);
-// app.use("/api/payment", paymentRoutes);
-// app.use("/api/testimonials", testimonialRoutes);
-// app.use("/api/clients", clientRoutes);
-// app.use("/api/data", dataRoutes);
-// app.use('/api/subscription', subscriptionRoutes);
-// app.use("/api/quotes", quoteRoutes); // Verified correct usage
-
-// // Default Route
-// app.get("/", (req, res) => {
-//   res.send("Welcome to the API!");
-// });
-
-// // Start Server
-// app.listen(PORT, () => {
-//   console.log(`🚀 Server is running on port ${PORT}`);
-// });
