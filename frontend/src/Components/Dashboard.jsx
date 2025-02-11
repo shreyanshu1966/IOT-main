@@ -115,7 +115,6 @@ function Dashboard() {
       </header>
       <main className="p-6 space-y-6">
         <section className="bg-gray-800 p-4 rounded-lg shadow-md">
-          
           <iframe
             src={`${import.meta.env.VITE_GRAFANA_URL}?kiosk&hideControls`}
             width="100%"
