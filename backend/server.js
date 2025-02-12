@@ -86,9 +86,20 @@ const documentsPath = path.join(__dirname, 'uploads/documents');
 if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath, { recursive: true });
 if (!fs.existsSync(documentsPath)) fs.mkdirSync(documentsPath, { recursive: true });
 
-// Serve files directly from the uploads directory
-app.use("/uploads", express.static(uploadsPath));
-app.use("/documents", express.static(documentsPath));
+// Serve files with correct headers and options
+app.use("/uploads", express.static(uploadsPath, {
+  setHeaders: (res, path) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  }
+}));
+
+app.use("/documents", express.static(documentsPath, {
+  setHeaders: (res, path) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  }
+}));
 
 // ✅ **Import Routes**
 const productRoutes = require("./routes/products");

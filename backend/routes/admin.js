@@ -79,7 +79,7 @@ router.post('/products', auth, admin, upload.fields([
     const productData = {
       ...req.body,
       features: JSON.parse(req.body.features || '[]'),
-      // Store just the filename without the /uploads/ prefix
+      // Store just the filename
       image: req.files['image'] ? req.files['image'][0].filename : '',
       documents: req.files['documents'] 
         ? req.files['documents'].map(file => ({
