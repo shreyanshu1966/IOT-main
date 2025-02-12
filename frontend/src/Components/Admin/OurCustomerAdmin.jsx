@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getImageUrl } from '../../utils/mediaUtils';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const OurCustomerAdmin = ({ token }) => {
@@ -8,6 +9,7 @@ const OurCustomerAdmin = ({ token }) => {
   const [logo, setLogo] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState('');
 
   useEffect(() => {
     fetchClients();
@@ -23,8 +25,20 @@ const OurCustomerAdmin = ({ token }) => {
   };
 
   const handleFileChange = (e) => {
-    setLogo(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      setLogo(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,9 +104,19 @@ const OurCustomerAdmin = ({ token }) => {
           <label className="block text-gray-700">Client Logo</label>
           <input
             type="file"
+            accept="image/*"
             onChange={handleFileChange}
             className="w-full px-4 py-2 border rounded-lg"
           />
+          {previewUrl && (
+            <div className="mt-2">
+              <img 
+                src={previewUrl} 
+                alt="Preview" 
+                className="h-16 w-auto"
+              />
+            </div>
+          )}
         </div>
         {error && <p className="text-red-500">{error}</p>}
         <button
@@ -106,7 +130,16 @@ const OurCustomerAdmin = ({ token }) => {
       <div className="grid grid-cols-2 gap-4">
         {clients.map((client) => (
           <div key={client._id} className="bg-white p-4 rounded-lg shadow">
-            <img src={client.logo} alt={client.name} className="h-16 w-auto mx-auto mb-2" />
+            <img 
+              src={getImageUrl(client.logo)} 
+              alt={client.name} 
+              className="h-16 w-auto mx-auto mb-2"
+              onError={(e) => {
+                console.error('Image load error:', client.logo);
+                e.target.onerror = null;
+                e.target.src = '/placeholder-image.png'; // Add a placeholder image
+              }}
+            />
             <p className="text-center">{client.name}</p>
             <div className="flex justify-center mt-2">
               <button
