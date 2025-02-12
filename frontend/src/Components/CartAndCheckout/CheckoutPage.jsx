@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getImageUrl } from '../../utils/mediaUtils';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const CheckoutPage = ({ cart, calculateTotal, token }) => {
@@ -124,7 +125,7 @@ const CheckoutPage = ({ cart, calculateTotal, token }) => {
                 <div className="flex items-center space-x-4">
                   <div className="h-12 w-12 rounded-lg border border-gray-700 overflow-hidden">
                     <img
-                      src={item.product.image}
+                      src={getImageUrl(item.product.image)}
                       alt={item.product.name}
                       className="h-full w-full object-cover"
                     />

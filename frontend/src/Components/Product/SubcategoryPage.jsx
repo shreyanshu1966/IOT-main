@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Tag, ChevronRight, ShoppingCart, Search } from 'lucide-react';
+import { getImageUrl } from '../../utils/mediaUtils';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const SubcategoryPage = () => {
@@ -125,7 +126,7 @@ const SubcategoryPage = () => {
                     >
                       <div className="relative h-48">
                         <img
-                          src={product.image}
+                          src={getImageUrl(product.image)}
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:opacity-80 transition-opacity"
                         />

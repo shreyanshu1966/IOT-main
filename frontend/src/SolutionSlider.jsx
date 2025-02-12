@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { getImageUrl } from './utils/mediaUtils';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const SolutionSlider = () => {
@@ -57,7 +58,7 @@ const SolutionSlider = () => {
               onClick={() => handleImageClick()} // Handle image click
             >
               <img 
-                src={solution.image} 
+                src={getImageUrl(solution.image)} 
                 alt={solution.name}
                 className="w-full h-full object-fill cursor-pointer"
               />

@@ -7,6 +7,7 @@ import OurCustomerAdmin from "./OurCustomerAdmin"; // Import the new component
 const apiUrl = import.meta.env.VITE_API_URL;
 import { Link } from "react-router-dom";
 // import OurCustomer from './../OurCustomer/OurCustomer';
+import { getImageUrl, getDocumentUrl } from '../../utils/mediaUtils';
 
 const isValidYouTubeUrl = (url) => {
   const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
@@ -554,6 +555,17 @@ const AdminPanel = ({ token }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Update preview images
+  const handlePreviewImage = (file) => {
+    if (file) {
+      if (typeof file === 'string') {
+        return getImageUrl(file);
+      }
+      return URL.createObjectURL(file);
+    }
+    return '';
   };
 
   return (

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getImageUrl } from '../../utils/mediaUtils';
 const apiUrl = import.meta.env.VITE_API_URL;
 const Admincarousel = () => {
   const [solutions, setSolutions] = useState([]);
@@ -70,11 +71,15 @@ const Admincarousel = () => {
       ) : (
         <ul className="mb-4">
           {solutions.map((solution) => (
-            <li
-              key={solution._id}
-              className="mb-2 flex justify-between items-center border-b pb-2"
-            >
-              <span className="text-lg">{solution.name}</span>
+            <li key={solution._id} className="mb-2 flex justify-between items-center border-b pb-2">
+              <div className="flex items-center">
+                <img
+                  src={getImageUrl(solution.image)}
+                  alt={solution.name}
+                  className="w-12 h-12 object-cover rounded mr-4"
+                />
+                <span className="text-lg">{solution.name}</span>
+              </div>
               <button
                 onClick={() => handleDeleteSolution(solution._id)}
                 className="bg-red-500 text-white px-4 py-2 rounded-lg"

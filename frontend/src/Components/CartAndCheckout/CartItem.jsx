@@ -1,5 +1,6 @@
 import React from 'react';
 import { Minus, Plus, X } from 'lucide-react';
+import { getImageUrl } from '../../utils/mediaUtils';
 
 const CartItem = ({ item, removeFromCart, updateQuantity }) => {
   return (
@@ -10,7 +11,7 @@ const CartItem = ({ item, removeFromCart, updateQuantity }) => {
       {/* Image */}
       <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border-2 border-gray-700 group-hover:border-blue-500 transition-colors">
         <img
-          src={item.image}
+          src={getImageUrl(item.image)}
           alt={item.name}
           className="h-full w-full object-cover transform transition-transform duration-300 group-hover:scale-105"
         />

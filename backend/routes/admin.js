@@ -11,8 +11,8 @@ const Category = require('../models/Category');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = file.fieldname === 'image' 
-      ? path.join(__dirname, '../../frontend/public/uploads')
-      : path.join(__dirname, '../../frontend/public/documents');
+      ? path.join(__dirname, '../uploads')
+      : path.join(__dirname, '../uploads/documents');
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
