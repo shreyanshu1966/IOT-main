@@ -25,7 +25,8 @@ app.use(cors({
     "http://intuitiverobotics.io",
     "https://intuitiverobotics.io",
     "https://www.intuitiverobotics.io",
-    "http://www.intuitiverobotics.io"
+    "http://www.intuitiverobotics.io",
+    "https://api.intuitiverobotics.io" // Add this line
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
