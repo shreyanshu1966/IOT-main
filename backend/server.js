@@ -7,7 +7,7 @@ const morgan = require("morgan");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
-const quotesRouter = require('./routes/quotes'); // Add this line to register the quotes routes
+const fs = require("fs");
 
 // Load environment variables
 dotenv.config();
@@ -15,7 +15,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// ✅ **CORS Middleware (Placed at the Top)**
 app.use(cors({
   origin: [
     "http://localhost:5175",
@@ -26,26 +26,43 @@ app.use(cors({
     "http://api.intuitiverobotics.io",
     "https://api.intuitiverobotics.io"
   ],
-  credentials: true,
+  credentials: true,  // Allow sending cookies/auth headers
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
-    'Content-Type', 
-    'Authorization', 
+    'Content-Type',
+    'Authorization',
     'X-Requested-With',
     'Accept',
     'Origin'
   ],
-  exposedHeaders: ['Access-Control-Allow-Origin'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204
+  exposedHeaders: ['Access-Control-Allow-Origin']
 }));
+
+// ✅ **Handle Preflight Requests**
+app.options('*', cors());
+
+// ✅ **Global Middleware for CORS Headers**
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization, X-Requested-With, Accept");
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204); // End preflight requests
+  }
+
+  next();
+});
+
+// ✅ **Security Middleware**
 app.use(helmet()); // Security headers
 app.use(morgan("dev")); // Logging HTTP requests
 app.use(express.json()); // Body parser for JSON
 app.use(express.urlencoded({ extended: true })); // Body parser for URL-encoded data
 app.use(cookieParser()); // Parse cookies
 
-// Rate Limiting (Protects against brute-force attacks)
+// ✅ **Rate Limiting (Protects against brute-force attacks)**
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per window
@@ -53,7 +70,7 @@ const apiLimiter = rateLimit({
 });
 app.use("/api/auth", apiLimiter); // Apply only to authentication routes
 
-// MongoDB Connection
+// ✅ **MongoDB Connection**
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -61,24 +78,18 @@ mongoose.connect(process.env.MONGODB_URI, {
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
-// Static Files
+// ✅ **Static File Serving**
 const uploadsPath = path.join(__dirname, '../frontend/public/uploads');
 const documentsPath = path.join(__dirname, '../frontend/public/documents');
 
 // Create directories if they don't exist
-const fs = require('fs');
-if (!fs.existsSync(uploadsPath)) {
-  fs.mkdirSync(uploadsPath, { recursive: true });
-}
-if (!fs.existsSync(documentsPath)) {
-  fs.mkdirSync(documentsPath, { recursive: true });
-}
+if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath, { recursive: true });
+if (!fs.existsSync(documentsPath)) fs.mkdirSync(documentsPath, { recursive: true });
 
-// Serve static files
 app.use("/uploads", express.static(uploadsPath));
 app.use("/documents", express.static(documentsPath));
 
-// Import Routes
+// ✅ **Import Routes**
 const productRoutes = require("./routes/products");
 const solutionRoutes = require("./routes/solutions");
 const cartRoutes = require("./routes/cart");
@@ -88,10 +99,11 @@ const orderRoutes = require("./routes/orders");
 const paymentRoutes = require("./routes/payment");
 const testimonialRoutes = require("./routes/testimonials");
 const clientRoutes = require("./routes/clients");
-const dataRoutes = require("./routes/data"); // Import data routes
-const subscriptionRoutes = require('./routes/subscription'); // Import subscription routes
+const dataRoutes = require("./routes/data");
+const subscriptionRoutes = require('./routes/subscription');
+const quotesRouter = require('./routes/quotes');
 
-// API Routes
+// ✅ **API Routes**
 app.use("/api/products", productRoutes);
 app.use("/api/solutions", solutionRoutes);
 app.use("/api/cart", cartRoutes);
@@ -101,16 +113,16 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/clients", clientRoutes);
-app.use("/api/data", dataRoutes); // Use data routes
-app.use('/api/subscription', subscriptionRoutes); // Use subscription routes
-app.use('/api/quote', quotesRouter); // Add this line to register the quotes routes
+app.use("/api/data", dataRoutes);
+app.use('/api/subscription', subscriptionRoutes);
+app.use('/api/quote', quotesRouter);
 
-// Default Route
+// ✅ **Default Route**
 app.get("/", (req, res) => {
   res.send("Welcome to the API!");
 });
 
-// Start Server
+// ✅ **Start Server**
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
 });
