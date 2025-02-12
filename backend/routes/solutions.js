@@ -29,14 +29,13 @@ router.get('/', async (req, res) => {
 // Create a new solution
 router.post('/', upload.single('image'), async (req, res) => {
   const { name } = req.body;
-  const image = req.file ? `/uploads/${req.file.filename}` : '';
+  // Remove leading slash
+  const image = req.file ? `${req.file.filename}` : '';
   const solution = new Solution({ name, image });
   try {
-    console.log('Solution data:', solution); // Add this line to log the solution data
     const newSolution = await solution.save();
     res.status(201).json(newSolution);
   } catch (err) {
-    console.error('Error saving solution:', err); // Add this line to log the error
     res.status(400).json({ message: err.message });
   }
 });

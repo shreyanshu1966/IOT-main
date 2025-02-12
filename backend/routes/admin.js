@@ -68,94 +68,74 @@ router.get('/products', auth, admin, async (req, res) => {
 });
 
 // Add new product (admin only)
-router.post('/products', 
-  auth, 
-  admin,
-  upload.fields([
-    { name: 'image', maxCount: 1 },
-    { name: 'documents', maxCount: 10 }
-  ]),
-  validateProduct,
-  async (req, res) => {
-    try {
-      const productData = {
-        ...req.body,
-        features: JSON.parse(req.body.features || '[]'),
-        image: req.files['image'] ? `/uploads/${req.files['image'][0].filename}` : '',
-        documents: req.files['documents'] 
-          ? req.files['documents'].map(file => ({
-              name: file.originalname,
-              url: `/documents/${file.filename}`
-            }))
-          : []
-      };
+router.post('/products', auth, admin, upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'documents', maxCount: 10 }
+]), validateProduct, async (req, res) => {
+  try {
+    const productData = {
+      ...req.body,
+      features: JSON.parse(req.body.features || '[]'),
+      // Remove leading slash from file paths
+      image: req.files['image'] ? `${req.files['image'][0].filename}` : '',
+      documents: req.files['documents'] 
+        ? req.files['documents'].map(file => ({
+            name: file.originalname,
+            url: `${file.filename}`
+          }))
+        : []
+    };
 
-      const product = new Product(productData);
-      const newProduct = await product.save();
-      res.status(201).json(newProduct);
-    } catch (err) {
-      res.status(400).json({ message: 'Error adding product', error: err.message });
-    }
+    const product = new Product(productData);
+    const newProduct = await product.save();
+    res.status(201).json(newProduct);
+  } catch (err) {
+    res.status(400).json({ message: 'Error adding product', error: err.message });
   }
-);
+});
 
 // Update product (admin only)
-router.put('/products/:id', 
-  auth, 
-  admin, 
-  upload.fields([
-    { name: 'image', maxCount: 1 },
-    { name: 'documents', maxCount: 10 }
-  ]),
-  validateProduct,
-  async (req, res) => {
-    try {
-      const updateData = {
-        name: req.body.name,
-        price: Number(req.body.price),
-        description: req.body.description,
-        category: req.body.category,
-        featured: req.body.featured === 'true',
-        rating: Number(req.body.rating) || 0,
-        reviews: Number(req.body.reviews) || 0,
-        features: JSON.parse(req.body.features || '[]'),
-        videoUrl: req.body.videoUrl || ''
-      };
+router.put('/products/:id', auth, admin, upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'documents', maxCount: 10 }
+]), validateProduct, async (req, res) => {
+  try {
+    const updateData = {
+      ...req.body,
+      features: JSON.parse(req.body.features || '[]')
+    };
 
-      // Handle image upload
-      if (req.files && req.files['image']) {
-        updateData.image = `/uploads/${req.files['image'][0].filename}`;
-      }
-
-      // Handle document uploads
-      if (req.files && req.files['documents']) {
-        const newDocuments = req.files['documents'].map(file => ({
-          name: file.originalname,
-          url: `/documents/${file.filename}`
-        }));
-        updateData.documents = [...newDocuments];
-      }
-
-      const product = await Product.findByIdAndUpdate(
-        req.params.id,
-        updateData,
-        { new: true }
-      );
-
-      if (!product) {
-        return res.status(404).json({ message: 'Product not found' });
-      }
-
-      res.json(product);
-    } catch (err) {
-      console.error('Update error:', err);
-      res.status(500).json({ 
-        message: 'Error updating product',
-        error: err.message 
-      });
+    if (req.files && req.files['image']) {
+      updateData.image = `${req.files['image'][0].filename}`;
     }
+
+    if (req.files && req.files['documents']) {
+      const newDocuments = req.files['documents'].map(file => ({
+        name: file.originalname,
+        url: `${file.filename}`
+      }));
+      updateData.documents = [...newDocuments];
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.json(product);
+  } catch (err) {
+    console.error('Update error:', err);
+    res.status(500).json({ 
+      message: 'Error updating product',
+      error: err.message 
+    });
   }
-);
+});
 
 // Delete product (admin only)
 router.delete('/products/:id', auth, admin, async (req, res) => {

@@ -30,13 +30,14 @@ router.get('/', async (req, res) => {
 // Add a new client
 router.post('/', upload.single('logo'), async (req, res) => {
   const { name } = req.body;
-  const logo = `/uploads/${req.file.filename}`;
+  // Remove leading slash
+  const logo = `${req.file.filename}`;
   const client = new Client({ name, logo });
   try {
     const newClient = await client.save();
     res.status(201).json(newClient);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
