@@ -86,8 +86,9 @@ const documentsPath = path.join(__dirname, 'uploads/documents');
 if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath, { recursive: true });
 if (!fs.existsSync(documentsPath)) fs.mkdirSync(documentsPath, { recursive: true });
 
+// Serve files directly from the uploads directory
 app.use("/uploads", express.static(uploadsPath));
-app.use("/documents", express.static(path.join(uploadsPath, 'documents')));
+app.use("/documents", express.static(documentsPath));
 
 // ✅ **Import Routes**
 const productRoutes = require("./routes/products");

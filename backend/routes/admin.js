@@ -10,13 +10,16 @@ const Category = require('../models/Category');
 // Set up multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    // Remove 'uploads/' from the path since it's handled by express.static
     const uploadPath = file.fieldname === 'image' 
       ? path.join(__dirname, '../uploads')
       : path.join(__dirname, '../uploads/documents');
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
+    // Create a clean filename without special characters
+    const cleanFileName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '-');
+    cb(null, `${Date.now()}-${cleanFileName}`);
   }
 });
 
@@ -76,12 +79,12 @@ router.post('/products', auth, admin, upload.fields([
     const productData = {
       ...req.body,
       features: JSON.parse(req.body.features || '[]'),
-      // Remove leading slash from file paths
-      image: req.files['image'] ? `${req.files['image'][0].filename}` : '',
+      // Store just the filename without the /uploads/ prefix
+      image: req.files['image'] ? req.files['image'][0].filename : '',
       documents: req.files['documents'] 
         ? req.files['documents'].map(file => ({
             name: file.originalname,
-            url: `${file.filename}`
+            url: file.filename // Store just the filename
           }))
         : []
     };
