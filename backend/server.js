@@ -18,19 +18,24 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors({
   origin: [
-    "http://localhost:5175", 
-    "https://yourdomain.com",
-    "http://147.93.106.39",
-    "http://147.93.106.39:5001",
+    "http://localhost:5175",
+    "http://www.intuitiverobotics.io",
+    "https://www.intuitiverobotics.io",
     "http://intuitiverobotics.io",
     "https://intuitiverobotics.io",
-    "https://www.intuitiverobotics.io",
-    "http://www.intuitiverobotics.io",
-    "https://api.intuitiverobotics.io" // Add this line
+    "http://api.intuitiverobotics.io",
+    "https://api.intuitiverobotics.io"
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With',
+    'Accept',
+    'Origin'
+  ],
+  exposedHeaders: ['Access-Control-Allow-Origin'],
   preflightContinue: false,
   optionsSuccessStatus: 204
 }));
